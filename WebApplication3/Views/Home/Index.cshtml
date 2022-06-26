@@ -7,14 +7,25 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+<script type="text/javascript">
+var user = '@Model';
+</script>
 
 
 <div id="chatApp">
+    <h2>Players</h2>
+
+        <ul v-for="(item, index) in players" v-bind:key="index + 'user'">
+      <li><b>Name: </b>{{item.user}}</li>
+    </ul>
+
+    <h2>Messages</h2>
+
   <div class="form-group">
     <form>
       <div>
         <label for="userName">Your Name</label>
-        <input type="text" name="Name" id="userName" v-model="userName" />
+        <input type="text" name="Name" id="userName" v-model="userName" readonly />
       </div>
       <div>
         <label for="userMessage">Message</label>

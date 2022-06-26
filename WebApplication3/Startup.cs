@@ -1,3 +1,4 @@
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,12 +15,14 @@ namespace WebApplication3
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+        private IWebHostEnvironment CurrentEnvironment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -29,15 +32,27 @@ namespace WebApplication3
 
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
+                if (CurrentEnvironment.IsDevelopment())
+                {
+                    options.AddDefaultPolicy(builder =>
                     {
-                        builder.WithOrigins("https://localhost:44323")
+                        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                    });
+                }
+                else
+                {
+                    options.AddDefaultPolicy(builder =>
+                    {
+                        builder.WithOrigins("https://scrumgame.handmadebydave.co.uk")
                             .AllowAnyHeader()
                             .WithMethods("GET", "POST")
                             .AllowCredentials();
                     });
+                }
+
             });
+
+            //services.AddScoped<IHubContext, ChatHub>();
 
         }
 

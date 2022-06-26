@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
             userName: "",
             userMessage: "",
             connection: "",
-            messages: []
+            messages: [],
+            players: []
         },
         methods: {
             submitCard: function () {
@@ -39,6 +40,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
             this.connection.start().catch(function (err) {
                 return console.error(err.toSting());
             });
+
+            this.userName = user;
         },
         mounted: function () {
             // ---------
@@ -51,6 +54,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
                 thisVue.connection.on("ReceiveMessage", function (user, message) {
                     thisVue.messages.push({ user, message });
+                });
+
+                thisVue.connection.on("PlayerJoined", function (user) {
+                    thisVue.players.push({ user });
+                   //console.log('player joined' + user);
                 });
             });
         }
